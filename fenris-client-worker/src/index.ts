@@ -861,6 +861,9 @@ function getStyles(): string {
       width: 120px;
       margin-bottom: 1.75rem;
     }
+    .entry-card .client-label {
+      margin-bottom: 1.25rem;
+    }
     .entry-card label {
       display: block;
       font-weight: 700;
@@ -978,7 +981,7 @@ function renderEntryForm(error = false): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fenris Client Portal</title>
+  <title>Fenris Partner Portal</title>
   ${getFontsLink()}
   <style>${getStyles()}</style>
 </head>
@@ -986,9 +989,10 @@ function renderEntryForm(error = false): string {
   <div class="entry-page">
     <div class="entry-card">
       <img src="https://raw.githubusercontent.com/gofenris/gofenris.github.io/main/static/images/fenris/fenris_logo_2ct_nb.png" alt="Fenris">
+      <span class="client-label">Fenris Secure Partner Portal</span>
       <form method="POST" action="/">
         <label for="code">Enter your partner code</label>
-        <input type="text" id="code" name="code" placeholder="e.g. ABCD1234" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <input type="text" id="code" name="code" placeholder="ABCD1234" autocomplete="off" autocapitalize="characters" spellcheck="false">
         ${errorHtml}
         <button type="submit">View your engagement</button>
       </form>
