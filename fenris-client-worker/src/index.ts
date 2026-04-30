@@ -12,7 +12,6 @@ interface Env {
 }
 
 interface ClientRecord {
-  label: string;
   github_folder: string;
 }
 

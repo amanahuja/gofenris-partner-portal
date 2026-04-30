@@ -1,8 +1,12 @@
 # Fenris Client Portal — operations
 
-worker_dir := "fenris-client-worker"
-config     := worker_dir / "wrangler.jsonc"
-kv_flags   := "--config " + config + " --remote --preview false"
+worker_dir   := "fenris-client-worker"
+config       := worker_dir / "wrangler.jsonc"
+kv_flags     := "--config " + config + " --remote --preview false"
+namespace_id := "084db5e549a64a3ebfb0c234550250cf"
+
+_default: 
+    @just --list 
 
 # ── Development ─────────────────────────────────────────────────────────────
 
@@ -17,15 +21,19 @@ deploy:
 # ── Client codes (KV) ───────────────────────────────────────────────────────
 
 # Add or update a client code
-# Usage: just set-client ACME01 "Acme Corp — Q1 2026" clients/acme
-set-client code label folder:
+# Usage: just set-client ACME01 clients/acme
+set-client code folder:
     npx wrangler kv key put --binding=CLIENT_CODES "{{code}}" \
-        '{"label":"{{label}}","github_folder":"{{folder}}"}' \
+        '{"github_folder":"{{folder}}"}' \
         {{kv_flags}}
 
-# List all client codes
+# List all client codes with their folder
 list-clients:
-    npx wrangler kv key list --binding=CLIENT_CODES {{kv_flags}}
+    #!/usr/bin/env bash
+    for code in $(npx wrangler kv key list --namespace-id={{namespace_id}} --remote 2>/dev/null | jq -r '.[].name'); do
+        folder=$(npx wrangler kv key get --namespace-id={{namespace_id}} --remote --text "$code" 2>/dev/null | jq -r '.github_folder')
+        printf "%-12s %s\n" "$code" "$folder"
+    done
 
 # Show the value for a specific client code
 # Usage: just get-client ACME01

@@ -15,7 +15,7 @@ Partner codes are stored in Cloudflare KV (`CLIENT_CODES` namespace). Each entry
 
 KV value format:
 ```json
-{ "label": "Acme Corp — Q1 2026", "github_folder": "clients/acme" }
+{ "github_folder": "clients/acme" }
 ```
 
 ### Add a new partner
@@ -52,19 +52,19 @@ Narrative paragraph.
 **Step 2 — Add the KV entry:**
 
 ```bash
-just set-client ACME01 "Acme Corp — Q1 2026" clients/acme
+just set-client ACME01 clients/acme
 ```
 
 **Step 3 — Share the code with the partner.**
 
 ---
 
-### Edit a partner code (change label or folder)
+### Edit a partner code (change folder)
 
 Re-run `set-client` with the same code — it overwrites the existing entry:
 
 ```bash
-just set-client ACME01 "Acme Corp — Q2 2026" clients/acme
+just set-client ACME01 clients/acme
 ```
 
 To edit via the Cloudflare dashboard: Workers & Pages → KV → `CLIENT_CODES` namespace → edit the key.
@@ -83,6 +83,14 @@ Access is blocked immediately. Optionally archive or delete `clients/acme/` in t
 
 ### List all active codes
 
+List keys  : `npx wrangler kv key list --namespace-id=084db5e549a64a3ebfb0c234550250cf --remote`
+Get value  : `npx wrangler kv key get --namespace-id=084db5e549a64a3ebfb0c234550250cf --remote --text ACME01`
+
+alternate: 
+* List codes : `npx wrangler kv key list --binding=CLIENT_CODES {{kv_flags}`
+
+
+List codes and folders, a bit of a messy recipe: 
 ```bash
 just list-clients
 ```
@@ -112,7 +120,7 @@ If `just` isn't available, all operations use this pattern:
 
 ```bash
 npx wrangler kv key put --binding=CLIENT_CODES "<CODE>" \
-  '{"label":"...","github_folder":"clients/<slug>"}' \
+  '{"github_folder":"clients/<slug>"}' \
   --config fenris-client-worker/wrangler.jsonc --remote --preview false
 
 npx wrangler kv key delete --binding=CLIENT_CODES "<CODE>" \
